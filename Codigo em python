@@ -1,0 +1,32 @@
+#importe as bibliotecas necessarias 
+#caso não rode, instale as bibliotecas com a função pip install
+
+from pytube import YouTube
+import moviepy.editor as mp
+import re
+import os
+
+#digite os link do video que quer obiter o audio e o local que deseja salvar o arquivo
+link = input("Digite o link do video:")
+path = input("Digite o local para salvar o arquivo:")
+youtube = YouTube(link)
+
+#Aqui o download começa
+print("baixando...")
+
+audio = youtube.streams.filter(only_audio=True).first().download(path)
+
+print("Download completo")
+
+#convertendo mp4 para mp3
+print("convertendo arquivo...")
+
+for file in os.listdir(path):
+  if re.search('mp4',file):
+    mp4_path = os.path.join(path, file)
+    mp3_path = os.path.join(path, os.path.splitext(file)[0]+'.mp3')
+    new_file = mp.AudioFileClip(mp4_path)
+    new_file.write_audiofile(mp3_path)
+    os.remove(mp4_path)
+    
+print("sucesso!")
